@@ -1,0 +1,63 @@
+Bootstrap: docker
+From: nvcr.io/nvidia/pytorch:26.01-py3
+
+
+%arguments
+    PYTHON_VERSION=3.12.3
+
+%files
+    pyproject.toml /opt/rasr/
+    src /opt/rasr/
+    torchtitan /opt/rasr/
+
+%environment
+    export USER=torchtitan
+    export HOME=/workspace
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/aarch64-linux-gnu:/opt/hpcx/nccl_rdma_sharp_plugin/lib:/opt/hpcx/nccl_rdma_sharp_plugin/lib
+
+%post
+
+    pip install --no-cache-dir --upgrade pip
+    pip install --no-cache-dir setuptools wheel cmake ninja packaging
+    pip install --no-cache-dir sentencepiece pytest-cov pre-commit
+    pip install --no-cache-dir einops pillow tensorboard tabulate wandb fsspec tyro safetensors
+    pip install --no-cache-dir expecttest==0.1.6
+    pip install --no-cache-dir pytest==7.3.2
+    pip install --no-cache-dir pyrefly==0.45.1
+    pip install --no-cache-dir tomli-w>=1.1.0
+    pip install --no-cache-dir transformers>=4.57.1
+    pip install --no-cache-dir --pre torchdata --extra-index-url https://download.pytorch.org/whl/nightly/cpu
+    pip install --no-cache-dir datasets>=3.6.0
+    pip install --no-cache-dir tokenizers>=0.15.0
+    pip install --no-cache-dir array-record black flake8 mypy etcd3 python-etcd torchelastic
+    pip install --no-cache-dir liger-kernel
+    pip install --no-cache-dir pyarrow
+
+    cd /opt/rasr/torchtitan
+    pip install -e .
+
+    cd /opt/rasr
+    pip install -e .
+
+    mkdir -p /workspace
+    chmod 777 /workspace
+
+    mkdir -p /home/torchtitan
+    chmod 777 /home/torchtitan
+
+
+%labels
+    Author Joerg Franke
+    Version 0.2.1
+    Base nvcr.io/nvidia/pytorch:26.01-py3
+    PyTorch nightly 2.10 (CUDA 13.0)
+    Description Container for RASR training with TorchTitan 0.2.1
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,103 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rasr"
+version = "0.2.0"
+description = "Reinforced Amortized Symbolic Regression"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { text = "MIT" }
+authors = [
+    { name = "David Otte" }
+]
+dependencies = [
+    "huggingface_hub",
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "simplipy==0.2.14",
+    "pyarrow",
+    "safetensors",
+    "tyro",
+    "tomli-w",
+    "toml",
+    "torchtitan",
+    "loky",
+    "triton",
+]
+
+[project.optional-dependencies]
+notebook = [
+    "ipykernel",
+    "jupyterlab",
+    "matplotlib",
+    "ipympl",
+]
+eval = [
+    "pmlb",
+    "seaborn",
+    "textalloc",
+]
+
+[dependency-groups]
+cpu = ["torch>=2.6.0"]
+gpu = ["torch>=2.6.0"]
+training = [
+    "accelerate",
+    "datasets",
+    "einops",
+    "tensorboard",
+    "tokenizers",
+    "transformers",
+    "trl",
+    "wandb",
+]
+data-gen = [
+    "xgboost",
+]
+dev = [
+    "ipykernel>=7.2.0",
+    "jupyterlab>=4.5.6",
+    "matplotlib",
+    "pytest",
+    "ruff",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+extend-exclude = [
+    "torchtitan",
+    "notebooks",
+    "src/rasr/data/generation/tabicl_v2_prior",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.uv]
+conflicts = [[{ group = "cpu" }, { group = "gpu" }]]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", group = "cpu" },
+    { index = "pytorch-cu126", group = "gpu" },
+]
+torchtitan = { path = "torchtitan", editable = true }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]

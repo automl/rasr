@@ -1,0 +1,7 @@
+[submodule "torchtitan"]
+	path = torchtitan
+	url = https://github.com/pytorch/torchtitan.git
+[submodule "srbench"]
+	path = srbench
+	url = https://github.com/davidotte/srbench.git
+	branch = rasr-paper

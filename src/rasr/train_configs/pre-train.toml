@@ -1,0 +1,88 @@
+[job]
+dump_folder = "RASR-94M"
+description = "Pre-training RASR-94M"
+custom_config_module = "src.rasr.job_config"
+
+[model]
+name = "rasr"
+flavor = "94M"
+
+[optimizer]
+name = "AdamW"
+lr = 2.2e-4
+eps = 1e-8
+weight_decay = 0.1
+beta1 = 0.9
+beta2 = 0.98
+
+[lr_scheduler]
+scheduler_type = "universal"
+warm_ratio = 0.05
+warm_direction = "up"
+warm_type = "linear"
+main_decay_type = "cosine"
+main_decay_ratio = 0.1
+cooldown_steps = 0
+
+[training]
+local_batch_size = 64
+seq_len = 512
+max_norm = 1.0
+steps = 242000
+dataset = "rasr_arrow"
+dataset_path = ""
+dtype = "bfloat16"
+mixed_precision_param = "bfloat16"
+mixed_precision_reduce = "float32"
+
+[dataloader]
+num_workers = 6
+prefetch_factor = 4
+data_path = ""         # override with --dataloader.data_path /path/to/data
+set_name = "train"
+val_set_name = "val"
+
+[tokenizer]
+special_tokens = ["<SOE>", "<EOE>", "<PAD>"]
+operators = ["+", "-", "*", "/", "abs", "inv", "neg", "pow", "pow2", "pow3", "pow4", "pow5", "pow1_2", "pow1_3", "pow1_4", "pow1_5", "sin", "cos", "tanh", "exp", "log"]
+variables = ["x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11"]
+digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+special_chars = ["e+", "e-"]
+
+[parallelism]
+data_parallel_replicate_degree = 1
+data_parallel_shard_degree = -1
+tensor_parallel_degree = 1
+pipeline_parallel_degree = 1
+fsdp_reshard_after_forward = "default"
+
+[checkpoint]
+enable = true
+folder = "checkpoint"
+interval = 2000
+async_mode = "disabled"
+
+[activation_checkpoint]
+mode = "selective"
+selective_ac_option = "2"
+
+[compile]
+enable = true
+
+[validation]
+enable = true
+freq = 500
+steps = -1
+local_batch_size = -1
+
+[metrics]
+log_freq = 10
+enable_tensorboard = false
+enable_wandb = true
+
+[parameter_logging]
+enabled = true
+log_interval = 100
+log_parameters = true
+log_gradients = true
+log_optimizer_states = false

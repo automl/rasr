@@ -1,0 +1,206 @@
+# The [tokenizer] section must stay in sync with pre-train_constant_placeholder.toml [tokenizer].
+
+[data_generation]
+simplipy_engine = "dev_7-3"
+output_path = "experiments/data/pre-train_constant_placeholder_90M"
+seed = 42
+num_workers = 128
+training_dataset_size = 90000000
+validation_dataset_size = 256
+arrow_write_batch_size = 2048
+
+[data_generation.sampling_retries]
+expressions = 1
+datasets = 3
+pairs = 1
+
+[tokenizer]
+special_tokens = ["<SOE>", "<EOE>", "<PAD>", "<constant>"]
+operators = ["+", "-", "*", "/", "abs", "inv", "neg", "pow", "pow2", "pow3", "pow4", "pow5", "pow1_2", "pow1_3", "pow1_4", "pow1_5", "sin", "cos", "tanh", "exp", "log"]
+variables = ["x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11"]
+digits = []
+special_chars = []
+constant_strategy = "placeholder"
+
+[prior.expressions]
+min_binary_ops_base = 0
+max_binary_ops_base = 8
+min_binary_ops_per_var = 0
+max_binary_ops_per_var = 1
+min_unary_ops = 0
+max_unary_ops = 5  # <-- change
+max_length = 512
+
+[prior.expressions.constants]
+mantissa_sig_figs = 3
+constant_max_exponent = 4
+
+[prior.expressions.operator_arity]
+"+" = 2
+"*" = 2
+"/" = 2
+abs = 1
+inv = 1
+pow2 = 1
+pow3 = 1
+pow4 = 1
+pow5 = 1
+pow1_2 = 1
+pow1_3 = 1
+pow1_4 = 1
+pow1_5 = 1
+sin = 1
+cos = 1
+tanh = 1
+exp = 1
+log = 1
+
+[prior.expressions.binary_operator_weights]
+"+" = 10
+"*" = 5
+"/" = 5
+
+[prior.expressions.unary_operator_weights]
+abs = 1  # <-- change
+inv = 1
+pow2 = 1
+pow3 = 1
+pow4 = 0.5
+pow5 = 0.5
+pow1_2 = 1
+pow1_3 = 1
+pow1_4 = 0.5
+pow1_5 = 0.5
+sin = 1
+cos = 1
+tanh = 1
+exp = 1
+log = 0.5
+
+[prior.expressions.operator_meta]
+enabled = false  # <-- change
+concentration_dist = "skew_normal"
+concentration_loc = 39.0
+concentration_scale = 11.0
+concentration_skew = -5.2
+
+[prior.expressions.constant_sampling]
+binary_const_std = 5.0
+
+[prior.expressions.constant_sampling.sin]
+c0_log_mean = 0.45
+c0_log_std = 1.0
+c1_mean = 0.0
+c1_std = 2.0
+
+[prior.expressions.constant_sampling.cos]
+c0_log_mean = 0.45
+c0_log_std = 1.0
+c1_mean = 0.0
+c1_std = 2.0
+
+[prior.expressions.constant_sampling.exp]
+c0_log_mean = -0.69
+c0_log_std = 0.8
+c1_mean = 0.0
+c1_std = 1.0
+
+[prior.expressions.constant_sampling.tanh]
+c0_log_mean = 0.0
+c0_log_std = 0.7
+c1_mean = 0.0
+c1_std = 1.5
+
+[prior.expressions.constant_sampling.log]
+c0_log_mean = 0.4
+c0_log_std = 0.8
+c1_center = 1.5
+c1_std = 1.0
+
+[prior.expressions.constant_sampling.pow1_2]
+c0_log_mean = 1.0
+c0_log_std = 0.8
+c1_center = 1.5
+c1_std = 1.0
+
+[prior.expressions.constant_sampling.pow1_4]
+c0_log_mean = 1.0
+c0_log_std = 0.8
+c1_center = 1.5
+c1_std = 1.0
+
+[prior.expressions.constant_sampling.inv]
+c0_log_mean = -0.69
+c0_log_std = 0.5
+c1_center = 1.5
+c1_std = 0.5
+domain_probs = [0.4, 0.4, 0.2]  # [negative, positive, both_sides]
+
+[prior.expressions.constant_sampling.pow2]
+c0_log_mean = 0.45
+c0_log_std = 1.0
+c1_mean = 0.0
+c1_std = 4.0
+
+[prior.expressions.constant_sampling.pow3]
+c0_log_mean = 0.45
+c0_log_std = 1.0
+c1_mean = 0.0
+c1_std = 4.0
+
+[prior.expressions.constant_sampling.pow4]
+c0_log_mean = 0.45
+c0_log_std = 1.0
+c1_mean = 0.0
+c1_std = 4.0
+
+[prior.expressions.constant_sampling.pow5]
+c0_log_mean = 0.45
+c0_log_std = 1.0
+c1_mean = 0.0
+c1_std = 4.0
+
+[prior.expressions.constant_sampling.pow1_3]
+c0_log_mean = 0.45
+c0_log_std = 1.0
+c1_mean = 0.0
+c1_std = 4.0
+
+[prior.expressions.constant_sampling.pow1_5]
+c0_log_mean = 0.45
+c0_log_std = 1.0
+c1_mean = 0.0
+c1_std = 4.0
+
+[prior.expressions.constant_sampling.abs]
+c0_log_mean = 0.0
+c0_log_std = 0.5
+c1_mean = 0.0
+c1_std = 1.5
+c1_straddle_margin = 0.05
+
+[prior.datasets]
+backbone = "tabicl_v2"  # <-- change
+target_noise_scale_std = 0.08
+target_noise_scale_zero_ratio = 0.4  # <-- change
+num_extra_columns_std = 1.5  # <-- change
+
+[prior.datasets.noise]
+base_noise_prob = 1.0
+
+[prior.datasets.noise.distribution_weights]
+gaussian = 0.5
+prior_node = 0.5
+
+[prior.datasets.noise.variance_weights]
+homoscedastic = 0.0
+hetero_x = 1.0
+
+[prior.datasets.noise.hetero]
+max_strength = 1.0
+max_sigma_ratio = 3.0
+
+[prior.datasets.num_samples]
+distribution = "uniform_int"
+min = 8
+max = 1024

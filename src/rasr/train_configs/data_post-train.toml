@@ -1,0 +1,15 @@
+[data_generation]
+output_path = "experiments/data/post-train"
+seed = 42
+num_workers = 128
+training_dataset_size = 512000
+validation_dataset_size = 128
+arrow_write_batch_size = 2048
+pretraining_prior_config = "src/rasr/train_configs/data_pre-train.toml"
+pretraining_fraction = 0.5
+
+[prior]
+min_train_size = 1
+max_train_size = 1024
+min_features = 1
+max_features = 11
